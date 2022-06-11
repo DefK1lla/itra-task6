@@ -133,7 +133,12 @@ class FakesGenerator {
     };
 
     addChar = (user, dataPart, max) => {
-        const addIndex = faker.datatype.number(max);
+        let addIndex = faker.datatype.number(max);
+
+        while (user[dataPart] === ' ') {
+            addIndex = faker.datatype.number(max);
+        }
+
         const getIndex = faker.datatype.number(max);
         const addChar = user[dataPart][addIndex] + user[dataPart].substring(getIndex, getIndex + 1);
         user[dataPart] = user[dataPart].addAt(addIndex, addChar);
@@ -154,6 +159,8 @@ class FakesGenerator {
     };
 
     deleteChar = (user, dataPart, max) => {
+        if (user[dataPart].replace(/\s/g, '').length < 4) return user;
+
         const deleteIndex = faker.datatype.number(max);
 
         user[dataPart] = user[dataPart].slice(0, deleteIndex) + user[dataPart].slice(deleteIndex + 1);
