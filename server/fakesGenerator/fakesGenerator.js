@@ -28,32 +28,6 @@ class FakesGenerator {
         return users;
     };
 
-    createRuUser = (usersCount, errorsCount) => {
-        const users = [];
-
-        for (let i = 0; i < usersCount; i++) {
-            const gender = faker.helpers.arrayElement(['male', 'female']);
-            const name = faker.name.findName(undefined, undefined, gender).split(' ');
-
-            let user = {
-                id: faker.database.mongodbObjectId(),
-                firstName: name[0],
-                middleName: faker.name.findName(undefined, undefined, 'male').split(' ')[0] + (gender === 'male' ? 'ович' : 'овна'),
-                lastName: name[1],
-                phone: faker.phone.phoneNumber(),
-                address: (faker.datatype.boolean() ? faker.address.state() + ', ' : '') + faker.address.city() + ', ' + faker.address.streetAddress(faker.datatype.boolean()),
-            };
-
-            users.push(user);
-        }
-
-        for (let i = 0; i < users.length; i++) {
-            users[i] = this.generateErrors(users[i], errorsCount);
-        }
-
-        return users;
-    };
-
     createHyUser = (usersCount, errorsCount) => {
         const users = [];
 
@@ -76,6 +50,46 @@ class FakesGenerator {
 
         return users;
     };
+
+    createRuUser = (usersCount, errorsCount) => {
+        const users = [];
+
+        for (let i = 0; i < usersCount; i++) {
+            const gender = faker.helpers.arrayElement(['male', 'female']);
+            const name = faker.name.findName(undefined, undefined, gender).split(' ');
+
+            let user = {
+                id: faker.database.mongodbObjectId(),
+                firstName: name[0],
+                middleName: this.createRuMiddleName(faker.name.findName(undefined, undefined, 'male').split(' ')[0], gender),
+                lastName: name[1],
+                phone: faker.phone.phoneNumber(),
+                address: (faker.datatype.boolean() ? faker.address.state() + ', ' : '') + faker.address.city() + ', ' + faker.address.streetAddress(faker.datatype.boolean()),
+            };
+
+            users.push(user);
+        }
+
+        for (let i = 0; i < users.length; i++) {
+            users[i] = this.generateErrors(users[i], errorsCount);
+        }
+
+        return users;
+    };
+
+    createRuMiddleName = (name, gender) => {
+        const suffix = (gender === 'male' ? 'вич' : 'вна');
+
+        if (name.endsWith('ей')) {
+            name = name.slice(0, name.length - 1) + 'е' + suffix;
+        } else if (name.endsWith('ий')) {
+            name = name.slice(0, name.length - 2) + 'ье' + suffix;
+        } else {
+            name = name + 'о' + suffix;
+        }
+
+        return name;
+    }
 
     createUser = (usersCount, errorsCount) => {
         const users = [];
