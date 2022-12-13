@@ -12,7 +12,7 @@ function App() {
 
   useEffect(() => {
     if (fetching) {
-      fetch(`https://immense-beach-85607.herokuapp.com/api/users/all?page=${currentPage}&seed=${seed}&locale=${locale}&errorsCount=${errorsCount}`)
+      fetch(`https://mrn-fks-bcknd.vercel.app/api/users/all?page=${currentPage}&seed=${seed}&locale=${locale}&errorsCount=${errorsCount}`)
         .then((res) => res.json())
         .then(data => {
           setUsers([...users, ...data.users]);
